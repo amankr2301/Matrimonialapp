@@ -24,7 +24,7 @@ app.UseCors(x => x
     .AllowAnyOrigin()
 );
 
-app.MapControllers();
+app.MapControllers();  
 
 
 // ✅ Auto migrate + seed database
