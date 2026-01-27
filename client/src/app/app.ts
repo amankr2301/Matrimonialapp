@@ -19,13 +19,14 @@ export class App implements OnInit{
     
   }
 
-  async getMembers(){ 
+  async getMembers(){   
 
     try {
       return lastValueFrom(this.http.get('https://localhost:5001/api/members'))
       
     } catch (error) {
-      console.log(error) ; 
+      console.log(error) ;
+      throw error ;  
       
     }
     
