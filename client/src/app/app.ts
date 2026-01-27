@@ -22,7 +22,8 @@ export class App implements OnInit{
   async getMembers(){   
 
     try {
-      return lastValueFrom(this.http.get('https://localhost:5001/api/members'))
+      return lastValueFrom(this.http.get('/api/members')
+)
       
     } catch (error) {
       console.log(error) ;
@@ -35,3 +36,8 @@ export class App implements OnInit{
   
 
 }
+
+
+
+
+
