@@ -1,0 +1,21 @@
+{
+  "name": "Matrimonial App (.NET 9 + Node 24.3.0)",
+  "image": "mcr.microsoft.com/devcontainers/dotnet:9.0",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "24.3.0"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-dotnettools.csharp",
+        "angular.ng-template",
+        "bradlc.vscode-tailwindcss"
+      ]
+    }
+  }
+}
+
+
+
