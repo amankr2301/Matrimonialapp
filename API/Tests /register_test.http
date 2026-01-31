@@ -1,0 +1,12 @@
+POST https://expert-orbit-vxgjgvpr752x694-5001.app.github.dev/api/account/register
+Content-Type: application/json
+
+{
+    "displayName": "John Doe",
+    "email": "john@example.com",
+    "password": "Password123"
+}
+
+
+
+
