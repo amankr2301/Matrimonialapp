@@ -3,18 +3,21 @@ using System.Security.Cryptography;
 using System.Text;
 using Api.Dtos;
 using API.Data ;
+using API.Dtos;
 using API.Entities;
+using API.Interfaces;
+using API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
-    public class AccountController(AppDbContext context) : BaseApiController
-    {
+    public class AccountController(AppDbContext context , ITokenService tokenService) : BaseApiController
+    {                 
 
         
         [HttpPost("register")]    // /api/account/register 
-        public async Task<ActionResult<AppUser>> Register(RegisterDto registerdto)
+        public async Task<ActionResult<UserDto>> Register(RegisterDto registerdto)
         {
 
             if (await Emailexist(registerdto.Email))
@@ -37,7 +40,14 @@ namespace Api.Controllers
             context.Add(user) ; 
             await context.SaveChangesAsync() ; 
 
-            return user ; 
+            return new UserDto
+            {
+                Id = user.Id ,
+                Email = user.Email, 
+                DisplayName = user.DisplayName , 
+                token = tokenService.CreateToken(user)
+
+            } ; 
 
 
         }
@@ -50,7 +60,7 @@ namespace Api.Controllers
 
         [HttpPost("login")]
 
-        public async Task<ActionResult<AppUser>> login(LoginDto logindto)
+        public async Task<ActionResult<UserDto>> login(LoginDto logindto)
         {
             var user = await context.Users.SingleOrDefaultAsync(x=> x.Email == logindto.Email) ; 
 
@@ -71,7 +81,14 @@ namespace Api.Controllers
                 }
             }
 
-            return user ; 
+            return new UserDto
+            {
+                Id = user.Id ,
+                Email = user.Email, 
+                DisplayName = user.DisplayName , 
+                token = tokenService.CreateToken(user)
+
+            } ; 
 
 
         }

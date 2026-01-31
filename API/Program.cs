@@ -1,5 +1,10 @@
+using System.Text;
 using API.Data;
+using API.Interfaces;
+using API.Services ;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +17,28 @@ builder.Services.AddDbContext<AppDbContext>(opt =>
 });
 
 builder.Services.AddCors();
+
+
+// Registering ITokenService to the DI (Dependency Injection) container.
+// Whenever a class asks for 'ITokenService', the system provides an instance of 'TokenService'.
+// 'AddScoped' means one instance is created per HTTP Request (stays alive for the duration of 
+// the click).
+
+builder.Services.AddScoped<ITokenService , TokenService>() ; 
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
+(options =>
+{
+    var tokenkey = builder.Configuration["TokenKey"] ?? throw new Exception("Token key not availaible - Program.cs") ; 
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true , 
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenkey)) , 
+        ValidateIssuer = false , 
+        ValidateAudience = false
+
+    } ; 
+}) ; 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -32,23 +59,12 @@ app.UseCors(x => x
     .AllowAnyOrigin()
 );
 
+// Adding authetication middleware 
+app.UseAuthentication() ; 
+app.UseAuthorization() ; 
+
 app.MapControllers();  
 
 
-// ✅ Auto migrate + seed database
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-
-try
-{
-    var context = services.GetRequiredService<AppDbContext>();
-    await context.Database.MigrateAsync();
-    await DbInitializer.SeedAsync(context);
-}
-catch (Exception ex)
-{
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error occurred during migration/seeding");
-}
 
 app.Run();
