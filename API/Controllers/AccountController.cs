@@ -5,6 +5,7 @@ using Api.Dtos;
 using API.Data ;
 using API.Dtos;
 using API.Entities;
+using API.Extensions;
 using API.Interfaces;
 using API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -40,14 +41,7 @@ namespace Api.Controllers
             context.Add(user) ; 
             await context.SaveChangesAsync() ; 
 
-            return new UserDto
-            {
-                Id = user.Id ,
-                Email = user.Email, 
-                DisplayName = user.DisplayName , 
-                token = tokenService.CreateToken(user)
-
-            } ; 
+            return user.ToDto(tokenService) ; 
 
 
         }
@@ -81,14 +75,7 @@ namespace Api.Controllers
                 }
             }
 
-            return new UserDto
-            {
-                Id = user.Id ,
-                Email = user.Email, 
-                DisplayName = user.DisplayName , 
-                token = tokenService.CreateToken(user)
-
-            } ; 
+            return user.ToDto(tokenService) ; 
 
 
         }

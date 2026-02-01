@@ -10,7 +10,7 @@ using API.Interfaces ;
 using Microsoft.IdentityModel.Tokens ; 
 
 
-
+// configuration is telling to get TokenKey from my configuration file (appsetting.json)
 public class TokenService(IConfiguration config) : ITokenService
 {
     public string CreateToken(AppUser user)
